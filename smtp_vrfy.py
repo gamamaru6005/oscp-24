@@ -15,17 +15,35 @@ except NameError:
     helodom = 'megacorpone.com'
 else:
     helodom = (sys.argv[3])
-print ("connecting to " +  inips + ' for user ' + inusers + ' with domain ' + helodom + '\r\n')
+try:
+        sys.argv[4]
+except NameError:
+        scanport = 25
+else:
+        scanport = int(sys.argv[4])
+print ("connecting to " +  inips + ' for user ' + inusers + ' with domain ' + helodom + ' to port ' + str(scanport) + '\r\n')
 #print ("checking user " + inusers + '\r\n')
-socket.setdefaulttimeout(3)
-s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-connect=s.connect((inips,25))
-banner=s.recv(1024)
-print banner
+#socket.setdefaulttimeout(3)
+connSkt=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+connSkt.settimeout(10)
+connSkt.connect((inips,scanport))
+connSkt.send('EHELO meagacorpone.com\r\n')
+data='\r\n'
+while True:
+  banner=connSkt.recv(1024)
+  if not banner:
+      break
+  connSkt.send(data)
+  banner = connSkt.recv(100)
+  if not banner:
+      break
+#print data
+
+print '[+]' + str(banner)
 helocommaand= 'EHELO ' + helodom +'r\n'
 helocommaand= 'EHELO megacorpone.com\r\n'
-s.send(helocommand.encode())
+connSkt.send(helocommand.encode())
 #s.send('VRFY ' + inusers + '\r\n')
-result=s.recv(1024)
-print result
-s.close()
+result=connSkt.recv(1024)
+print '[+]' + str(result)
+connSkt.close()
