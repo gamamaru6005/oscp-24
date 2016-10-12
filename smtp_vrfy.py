@@ -2,6 +2,8 @@
 
 import socket
 import sys
+import optparse
+
 if len(sys.argv) <2:
     print "usage: provide a file name and list of ip addresses"
     sys.exit(0)
@@ -27,16 +29,16 @@ print ("connecting to " +  inips + ' for user ' + inusers + ' with domain ' + he
 connSkt=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 connSkt.settimeout(10)
 connSkt.connect((inips,scanport))
-connSkt.send('EHELO meagacorpone.com\r\n')
+connSkt.sendall('\r\n')
 data='\r\n'
+
 while True:
-  banner=connSkt.recv(1024)
+  connSkt.sendall('EHELO meagacorpone.com\r\n')
+  banner=connSkt.recv(100)
   if not banner:
       break
-  connSkt.send(data)
-  banner = connSkt.recv(100)
-  if not banner:
-      break
+  connSkt.sendall(data)
+
 #print data
 
 print '[+]' + str(banner)
