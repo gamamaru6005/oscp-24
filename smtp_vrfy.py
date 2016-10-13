@@ -2,7 +2,6 @@
 
 import socket
 import sys
-import optparse
 
 if len(sys.argv) <2:
     print "usage: provide a file name and list of ip addresses"
