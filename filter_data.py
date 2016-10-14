@@ -24,34 +24,42 @@ infile = args.infile
 indir = args.indir
 sourcefiles = fnmatch.filter(os.listdir(indir),infile)
 #print sourcefiles
+"""
 print "start pattern: " + args.startpattern
 print "end pattern: " + args.endpattern
 print "ignore pattern: " + args.ignorepattern
 print "file name: " + args.infile
+"""
 
 startpattern = re.compile(args.startpattern)
 endpattern = re.compile(args.endpattern)
 ignorepattern = re.compile(args.ignorepattern)
 
-printdata = False
-ignoreline = False
+
 
 for filelist in sourcefiles:
+    printdata = False
+    ignoreline = False
     #print "opening file named" + filelist
     for line in fileinput.input(indir + filelist):
-        if startpattern.search(line):
-            printdata=True
-        if ignorepattern.search(line) and printdata:
+        if ignorepattern.search(line) and printdata and (not startpattern.search(line)):
             printdata=False
             ignoreline = True
+            #print "debug:ignore data is " + line
+        if endpattern.search(line) and (not startpattern.search(line)):
+            printdata = False
+        if startpattern.search(line):
+            printdata=True
+
     #only print stuff in the middle
         if printdata and len(line) >0:
             sys.stdout.write(line)
     #reset after the printline
+
+            #print "debug: end pattern is " + line
         if ignoreline:
             ignoreline = False
             printdata = True
-        if endpattern.search(line):
-            printdata = False
+
 
 
