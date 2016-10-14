@@ -41,7 +41,7 @@ for filelist in sourcefiles:
     for line in fileinput.input(indir + filelist):
         if startpattern.search(line):
             printdata=True
-        if ignorepattern.search(line):
+        if ignorepattern.search(line) and printdata:
             printdata=False
             ignoreline = True
     #only print stuff in the middle
@@ -50,6 +50,7 @@ for filelist in sourcefiles:
     #reset after the printline
         if ignoreline:
             ignoreline = False
+            printdata = True
         if endpattern.search(line):
             printdata = False
 
