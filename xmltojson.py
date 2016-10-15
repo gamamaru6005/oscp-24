@@ -10,14 +10,22 @@ from pprint import pprint
 #print "Starting read xml and parse"
 if len(sys.argv) < 1:
         print "usage: provide a xml file to convert to json " % (sys.argv[0])
-        sys.exit(0)
+        sys.exit(2)
 #print ("Args list : %s " %  sys.argv)
 infile =(sys.argv[1])
+if "xml" not in infile:
+    print "please provide an xml file as input"
+    sys.exit(3)
+target = infile.replace('xml','json')
 
-#nm=nmap.PortScanner()
+outfile = open(target,'w')
+outfile.truncate()
 
 with open(infile,"rb") as fd:
    # content = fd.read()
     doc = xmltodict.parse(fd)
     jdata = (json.dumps(doc, ensure_ascii=True, indent=4))
     sys.stdout.write(jdata)
+    outfile.write(jdata)
+#sys.stdout.write( "target is " + target)
+outfile.close()
