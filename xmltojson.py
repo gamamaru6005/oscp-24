@@ -6,6 +6,8 @@ import json
 import csv
 import xmltodict
 from pprint import pprint
+from xml.parsers.expat import ExpatError
+import untangle
 
 #print "Starting read xml and parse"
 if len(sys.argv) < 1:
@@ -23,7 +25,12 @@ outfile.truncate()
 
 with open(infile,"rb") as fd:
    # content = fd.read()
-    doc = xmltodict.parse(fd)
+    try:
+        #doc = xmltodict.parse(fd)
+        doc = untangle.parse(infile)
+    except ExpatError:
+        print "expat error found"
+
     jdata = (json.dumps(doc, ensure_ascii=True, indent=4))
     sys.stdout.write(jdata)
     outfile.write(jdata)
